@@ -6,6 +6,7 @@ import { db } from "../db/intex";
 import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { signAccessTokenFor } from "../lib/jwt";
+import { calculateGoals } from "../lib/caculateGoals";
 
 const schema = z.object({
   goal: z.enum(["lose", "maintain", "gain"]),
@@ -46,6 +47,15 @@ export class SignUpController {
 
 
     const { account, ...rest } = data
+    const goals = calculateGoals({
+      activityLevel: rest.activityLevel,
+      birthDate: new Date(rest.birthDate),
+      gender: rest.gender,
+      goal: rest.goal,
+      height: rest.height,
+      weight: rest.weight,
+    });
+
     const hashedPassword = await hash(data.account.password, 8)
 
     const [user] = await db.insert(usersTable).values({
@@ -53,10 +63,7 @@ export class SignUpController {
       email: account.email,
       password: hashedPassword,
       ...rest,
-      calories: 0,
-      carbohydrates: 0,
-      fats: 0,
-      proteins: 0,
+      ...goals
     }).returning({
       id: usersTable.id,
     })
