@@ -2,7 +2,7 @@ import { z } from "zod";
 import { hash } from "bcryptjs"
 import type { HttpRequest, HttpResponse } from "../types/Http";
 import { badRequest, conflict, created } from "../utils/http";
-import { db } from "../db/intex";
+import { db } from "../db";
 import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { signAccessTokenFor } from "../lib/jwt";

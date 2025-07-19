@@ -3,7 +3,7 @@ import { compare } from "bcryptjs"
 
 import type { HttpRequest, HttpResponse } from "../types/Http";
 import { badRequest, ok, unauthorized } from "../utils/http";
-import { db } from "../db/intex";
+import { db } from "../db";
 import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { signAccessTokenFor } from "../lib/jwt";

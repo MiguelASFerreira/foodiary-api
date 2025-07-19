@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db } from "../db/intex";
+import { db } from "../db";
 import type { HttpResponse, ProtectedHttpRequest } from "../types/Http";
 import { ok } from "../utils/http";
 import { usersTable } from "../db/schema";
