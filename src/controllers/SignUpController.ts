@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { hash } from "bcryptjs"
 import type { HttpRequest, HttpResponse } from "../types/Http";
 import { badRequest, conflict, created } from "../utils/http";
 import { db } from "../db/intex";
 import { usersTable } from "../db/schema";
 import { eq } from "drizzle-orm";
-import type id from "zod/v4/locales/id.cjs";
 
 const schema = z.object({
   goal: z.enum(["lose", "maintain", "gain"]),
@@ -45,11 +45,12 @@ export class SignUpController {
 
 
     const { account, ...rest } = data
+    const hashedPassword = await hash(data.account.password, 8)
 
     const [user] = await db.insert(usersTable).values({
       name: account.name,
       email: account.email,
-      password: account.password,
+      password: hashedPassword,
       ...rest,
       calories: 0,
       carbohydrates: 0,
