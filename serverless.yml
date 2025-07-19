@@ -1,6 +1,9 @@
 org: orggaro
 service: foodiary-api
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   region: sa-east-1
@@ -17,14 +20,14 @@ build:
 
 functions:
   signin:
-    handler: src/signin.handler
+    handler: src/functions/signin.handler
     events:
       - httpApi:
           path: /signin
           method: POST
 
   signup:
-    handler: src/signin.handler
+    handler: src/functions/signin.handler
     events:
       - httpApi:
           path: /signup
