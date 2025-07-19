@@ -27,7 +27,7 @@ functions:
           method: POST
 
   signup:
-    handler: src/functions/signin.handler
+    handler: src/functions/signup.handler
     events:
       - httpApi:
           path: /signup
