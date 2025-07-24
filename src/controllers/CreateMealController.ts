@@ -25,8 +25,8 @@ export class CreateMealController {
     }
 
     const fileId = randomUUID()
-    const ext = data.fileType === 'audio/m4a' ? '.m4a' : '.jpeg';
-    const fileKey = `refeicoes/${fileId}${ext}`;
+    const ext = data.fileType === 'audio/m4a' ? '.m4a' : '.jpg';
+    const fileKey = `${fileId}${ext}`;
 
     const command = new PutObjectCommand({
       Bucket: process.env.BUCKET_NAME,
@@ -48,8 +48,8 @@ export class CreateMealController {
     })
 
     return created({
-      mealsId: meal.id,
-      uploadUrl: presinedUrl
+      mealId: meal.id,
+      uploadURL: presinedUrl
     })
   }
 }

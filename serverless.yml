@@ -12,6 +12,7 @@ provider:
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
     JWT_SECRET: ${env:JWT_SECRET}
+    OPENAI_KEY: ${env:OPENAI_KEY}
     BUCKET_NAME: !Ref UploadsBucket
     MEALS_QUEUE_URL: !Ref MealsQueue
   iam:
@@ -20,6 +21,7 @@ provider:
         - Effect: Allow
           Action:
             - s3:PutObject
+            - s3:GetObject
           # Resource: !GetAtt UploadsBucket.Arn
           Resource: !Sub '${UploadsBucket.Arn}/*'
         - Effect: Allow
