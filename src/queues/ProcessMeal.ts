@@ -1,10 +1,11 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { mealsTable } from "../db/schema";
-import { getMealDetailsFromText, transcribeAudio } from "../service/ai";
+import { getMealDetailsFromImage, getMealDetailsFromText, transcribeAudio } from "../service/ai";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../clients/s3Client";
 import { Readable } from "node:stream";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export class ProcessMeal {
   static async proccess({ fileKey }: { fileKey: string }) {
@@ -37,6 +38,19 @@ export class ProcessMeal {
           createdAt: new Date(),
           text: transcription,
         })
+
+        icon = mealDetails.icon;
+        name = mealDetails.name;
+        foods = mealDetails.foods;
+      }
+
+      if (meal.inputType === 'picture') {
+        const imageURL = await this.getImageURL(meal.inputFileKey);
+
+        const mealDetails = await getMealDetailsFromImage({
+          createdAt: meal.createdAt,
+          imageURL,
+        });
 
         icon = mealDetails.icon;
         name = mealDetails.name;
@@ -80,5 +94,14 @@ export class ProcessMeal {
         }
 
         return Buffer.concat(chunks);
+  }
+
+  private static async getImageURL(fileKey: string) {
+    const command = new GetObjectCommand({
+      Bucket: process.env.BUCKET_NAME,
+      Key: fileKey,
+    });
+
+    return getSignedUrl(s3Client, command, { expiresIn: 600 });
   }
 }
